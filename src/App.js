@@ -1,23 +1,38 @@
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
 
+
 function App() {
+
+  const [isi, setIsi] = useState(Array(9).fill(null))
+
+  const handleClick = (i) => {
+    setIsi[i] = "X"
+    console.log(isi)
+  }
+  console.log(isi)
+  function Square ({value}, klik){
+    
+    // const [value, setValue] = useState(null)
+
+    // const klik = () => {
+    //   setValue('X')
+    // }
+
+    return <div className='kotak' onClick={klik()}>{value}</div>
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Square value={isi[0]} klik={handleClick(0)}/>
+      <Square value={isi[1]}/>
+      <Square value={isi[2]}/>
+      <Square value={isi[3]}/>
+      <Square value={isi[4]}/>
+      <Square value={isi[5]}/>
+      <Square value={isi[6]}/>
+      <Square value={isi[7]}/>
+      <Square value={isi[8]}/>
     </div>
   );
 }
