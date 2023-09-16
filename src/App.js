@@ -1,27 +1,46 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Square from './kotak.js'
  
 
 export default function App () {
+// [
+//   [null, null, null, null, null, null, null, null, null],
+// ]
+const [histori, setHistori] = useState([Array(9).fill(null)])
+const [move, setMove] = useState(0)
+const [isi, setIsi] = useState(Array(9).fill(null))
+const giliranX = move%2 === 0 //true
 
-  const [isi, setIsi] = useState(Array(9).fill(null))
-  const [giliranX, setGiliranX] = useState(true)
-
-  const handleClick = (i) => {
+const handleClick = (i) => {
     if(isi[i] || cekPemenang(isi)) return
     const isiBaru = isi.slice()
-    // if (giliranX) {
-    //   isiBaru[i] = "X"
-    // }else{
-    //   isiBaru[i] = "O"
-    // }
+    const historiBaru = [...histori, isiBaru]
     isiBaru[i] = giliranX ? 'X' : 'O'
+    setHistori(historiBaru)
     setIsi(isiBaru)
-    setGiliranX(!giliranX)
+    setMove(historiBaru.length - 1)
   }
-  // console.log(cekPemenang(isi));
-  // console.log(isi)
+  
+  const undo = () => {
+    if(histori.length === 1) return alert("belum mulai")
+    setIsi(histori[move - 1])
+    setHistori(histori.slice(0, histori.length -1))
+    setMove(move -1)
+}
+
+const reset = () => {
+  setIsi(histori[0])
+  setMove(0)
+  setHistori(histori.slice(0,1))
+}
+
+  useEffect(() => {
+    console.log(histori)
+    console.log(isi)
+    console.log('move ' + move)
+  })
+
   const pemenang = cekPemenang(isi)
   let hasil = "Giliran : " + (giliranX ? 'X' : 'O')
   if (pemenang) {
@@ -31,6 +50,8 @@ export default function App () {
     <>
     <div className='status'>
       {hasil}
+      <button className="btn" onClick={undo}>Undo</button>
+      <button className="btn" onClick={reset}>Reset</button>
     </div>
     <div className="App">
       <Square value={isi[0]} klik={() => handleClick(0)}/>
@@ -59,13 +80,10 @@ function cekPemenang (isi){
     [2, 4, 6]
   ]
 for (let i = 0; i < win.length; i++) {
-  const a = win[i][0]
-  const b = win[i][1]
-  const c = win[i][2]
+  const [a, b, c] = win[i]
   if (isi[a] && isi[a] === isi[b] && isi[a] === isi[c] ){
     return isi[a]
   }
 }
 return false
-
 }
